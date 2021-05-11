@@ -1,0 +1,160 @@
+{
+  "version": 3,
+  "targets": {
+    "net5.0": {
+      "Newtonsoft.Json/13.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {}
+        }
+      },
+      "PushBulletSharp/3.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/portable-windows8+net45/BouncyCastle.dll": {},
+          "lib/portable-windows8+net45/PushbulletSharp.dll": {}
+        },
+        "runtime": {
+          "lib/portable-windows8+net45/BouncyCastle.dll": {},
+          "lib/portable-windows8+net45/PushbulletSharp.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Newtonsoft.Json/13.0.1": {
+      "sha512": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
+      "type": "package",
+      "path": "newtonsoft.json/13.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "lib/net20/Newtonsoft.Json.dll",
+        "lib/net20/Newtonsoft.Json.xml",
+        "lib/net35/Newtonsoft.Json.dll",
+        "lib/net35/Newtonsoft.Json.xml",
+        "lib/net40/Newtonsoft.Json.dll",
+        "lib/net40/Newtonsoft.Json.xml",
+        "lib/net45/Newtonsoft.Json.dll",
+        "lib/net45/Newtonsoft.Json.xml",
+        "lib/netstandard1.0/Newtonsoft.Json.dll",
+        "lib/netstandard1.0/Newtonsoft.Json.xml",
+        "lib/netstandard1.3/Newtonsoft.Json.dll",
+        "lib/netstandard1.3/Newtonsoft.Json.xml",
+        "lib/netstandard2.0/Newtonsoft.Json.dll",
+        "lib/netstandard2.0/Newtonsoft.Json.xml",
+        "newtonsoft.json.13.0.1.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "packageIcon.png"
+      ]
+    },
+    "PushBulletSharp/3.1.0": {
+      "sha512": "sP2ppGLR2lKdLxyG6U5MSDwOBmp7fDETcjehh8TNSlT5Fl5vJcJ4AnvmHzms8T1WhUO2YqZeY80AvF7FV68DgA==",
+      "type": "package",
+      "path": "pushbulletsharp/3.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/portable-windows8+net45/BouncyCastle.dll",
+        "lib/portable-windows8+net45/PushbulletSharp.dll",
+        "lib/portable-windows8+net45/PushbulletSharp.pdb",
+        "pushbulletsharp.3.1.0.nupkg.sha512",
+        "pushbulletsharp.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net5.0": [
+      "Newtonsoft.Json >= 13.0.1",
+      "PushBulletSharp >= 3.1.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\mike_\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\mike_\\source\\repos\\Overvågning\\UDPConsumerGit\\UDPConsumerGit\\UDPConsumerGit\\UDPConsumerGit.csproj",
+      "projectName": "UDPConsumerGit",
+      "projectPath": "C:\\Users\\mike_\\source\\repos\\Overvågning\\UDPConsumerGit\\UDPConsumerGit\\UDPConsumerGit\\UDPConsumerGit.csproj",
+      "packagesPath": "C:\\Users\\mike_\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\mike_\\source\\repos\\Overvågning\\UDPConsumerGit\\UDPConsumerGit\\UDPConsumerGit\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\mike_\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net5.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net5.0": {
+        "targetAlias": "net5.0",
+        "dependencies": {
+          "Newtonsoft.Json": {
+            "target": "Package",
+            "version": "[13.0.1, )"
+          },
+          "PushBulletSharp": {
+            "target": "Package",
+            "version": "[3.1.0, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+      }
+    }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'PushBulletSharp 3.1.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net5.0'. This package may not be fully compatible with your project.",
+      "libraryId": "PushBulletSharp",
+      "targetGraphs": [
+        "net5.0"
+      ]
+    }
+  ]
+}
