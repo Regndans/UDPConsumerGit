@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -16,7 +17,8 @@ namespace UDPConsumerGit
     {
 
         //API uri
-        private const string BaseUri = "https://restsense.azurewebsites.net/api/pir/";
+        private const string SensorUri = "https://restsense.azurewebsites.net/api/Sensor/";
+        private const string MotionUri = "https://restsense.azurewebsites.net/api/Motion/";
 
         static void Main(string[] args)
         {
@@ -27,7 +29,7 @@ namespace UDPConsumerGit
 
             #region Pushbullet
             //Pushbullet notification target device
-            var apiKey = "o.m6FEoL5WPlV6fzumAYNumMnzpNsNVuDJ";
+            var apiKey = "o.NWignlPelQZuZ0esmenixTsHLoafUmzr";
             PushbulletClient client = new PushbulletClient(apiKey);
             var devices = client.CurrentUsersDevices();
             var targetDevices = devices.Devices;
@@ -49,57 +51,81 @@ namespace UDPConsumerGit
             {
                 Console.WriteLine("Server is listening");
 
-
-                Byte[] receiveBytes = udpServer.Receive(ref RemoteIpEndPoint);
-
-                //Receive Json broadcast
-                string receivedData = Encoding.ASCII.GetString(receiveBytes);
-                string[] data = receivedData.Split(' ');
-                string clientName = data[0];
-                Console.WriteLine(receivedData);
-
-                //Deserialize received Json
-                SensorModel conData = JsonConvert.DeserializeObject<SensorModel>(receivedData);
-
-                #region post & notification
-                //POST to REST if motion is detected
-                if (conData.Status == "Motion Detected")
+                while (true)
                 {
-                    Console.WriteLine(conData.Name);
-                    SensorModel newPirSensor = conData;
-                    SensorModel p = Post<SensorModel, SensorModel>(BaseUri, newPirSensor).Result;
-                    Console.WriteLine("Added: " + p);
 
-                    //Send notification to targeted devices
-                    foreach (var device in targetDevices)
+
+                    Byte[] receiveBytes = udpServer.Receive(ref RemoteIpEndPoint);
+
+                    //Receive Json broadcast
+                    string receivedData = Encoding.ASCII.GetString(receiveBytes);
+                    string[] data = receivedData.Split(' ');
+                    string clientName = data[0];
+                    Console.WriteLine(receivedData);
+
+                    //Deserialize received Json + Split into MotionModel and SensorModel
+                    MotionModel motionData = JsonConvert.DeserializeObject<MotionModel>(receivedData);
+                    SensorModel sensorData = JsonConvert.DeserializeObject<SensorModel>(receivedData);
+
+                    
+                    #region post & notification
+                    
+                    //POST to REST if motion is detected
+                    if (motionData.Status == "Motion Detected")
                     {
-                        PushNoteRequest request = new PushNoteRequest
+                        List<SensorModel> sensorModels = GetAllDataAsync<SensorModel>(SensorUri).Result;
+                        
+                        foreach (var x in sensorModels)
                         {
-                            DeviceIden = device.Iden,
-                            Title = $"Motion detected from sensor: {conData.Name}! Time of detection: {conData.TimeOfDetection}",
-                            Body = $"Message for: {device.Model}"
-                        };
+                            if (x.SensorId == motionData.SensorId && x.Active == true)
+                            {
+                                MotionModel newMotionData = motionData;
+                                MotionModel p = Post<MotionModel, MotionModel>(MotionUri, newMotionData).Result;
+                                Console.WriteLine("Added: " + p);
 
-                        client.PushNote(request);
+                                //Send notification to targeted devices
+                                foreach (var device in targetDevices)
+                                {
+                                    PushNoteRequest request = new PushNoteRequest
+                                    {
+                                        DeviceIden = device.Iden,
+                                        Title =
+                                            $"Motion detected from sensor: {sensorData.Name}! Time of detection: {motionData.TimeOfDetection}",
+                                        Body = $"Message for: {device.Model}"
+                                    };
+
+                                    client.PushNote(request);
+
+                                }
+
+                                //Send notification to targeted secondary user
+                                //foreach (var device in targetDevices2)
+                                //{
+                                //    PushNoteRequest request = new PushNoteRequest
+                                //    {
+                                //        DeviceIden = device.Iden,
+                                //        Title = $"Motion detected from sensor: {conData.Name}! Time of detection: {conData.TimeOfDetection}",
+                                //        Body = $"Message for: {device.Model}"
+                                //    };
+                                //    client2.PushNote(request);
+                                //}
+                            }
+
+                        }
+                        
+
+
+                        
+
 
                     }
-
-                    //Send notification to targeted secondary user
-                    //foreach (var device in targetDevices2)
-                    //{
-                    //    PushNoteRequest request = new PushNoteRequest
-                    //    {
-                    //        DeviceIden = device.Iden,
-                    //        Title = $"Motion detected from sensor: {conData.Name}! Time of detection: {conData.TimeOfDetection}",
-                    //        Body = $"Message for: {device.Model}"
-                    //    };
-                    //    client2.PushNote(request);
-                    //}
-
-
+                    #endregion
+                    
                 }
 
-                #endregion
+
+
+
 
             }
 
@@ -109,6 +135,7 @@ namespace UDPConsumerGit
             }
 
             #endregion
+
         }
     }
 }
