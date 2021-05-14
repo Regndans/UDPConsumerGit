@@ -4,6 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
 using Newtonsoft.Json;
 using static UDPConsumerGit.Consumer;
 using PushbulletSharp;
@@ -19,6 +22,44 @@ namespace UDPConsumerGit
         //API uri
         private const string SensorUri = "https://restsense.azurewebsites.net/api/Sensor/";
         private const string MotionUri = "https://restsense.azurewebsites.net/api/Motion/";
+        private const string TimerUri = "https://restsense.azurewebsites.net/api/Timer/";
+
+
+        public static async void CheckTimer()
+        {
+            try
+            {
+                while (true)
+                {
+                    List<TimerModel> timermodel = GetAllDataAsync<TimerModel>(TimerUri).Result;
+                    List<SensorModel> sensorModels2 = GetAllDataAsync<SensorModel>(SensorUri).Result;
+                    foreach (var x in timermodel)
+                    {
+                        if (DateTime.Now > x.ActiveStart && DateTime.Now < x.ActiveEnd)
+                        {
+                            foreach (var z in sensorModels2)
+                            {
+                                if (z.Active == false)
+                                {
+                                    z.Active = true;
+                                    SensorModel s = Put<SensorModel, SensorModel>(SensorUri + z.SensorId + "?key=4000", z).Result;
+                                    Console.WriteLine("Updated " + s);
+
+                                }
+                            }
+                        }
+                    }
+
+                    await Task.Delay(600000);
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 
         static void Main(string[] args)
         {
@@ -47,13 +88,18 @@ namespace UDPConsumerGit
             UdpClient udpServer = new UdpClient(7000);
             IPEndPoint RemoteIpEndPoint = new IPEndPoint(IPAddress.Broadcast, 7000);
 
+            
+
             try
             {
                 Console.WriteLine("Server is listening");
-
+                
                 while (true)
                 {
+                    CheckTimer();
+                        
 
+                    
 
                     Byte[] receiveBytes = udpServer.Receive(ref RemoteIpEndPoint);
 
@@ -75,6 +121,7 @@ namespace UDPConsumerGit
                     {
                         List<SensorModel> sensorModels = GetAllDataAsync<SensorModel>(SensorUri).Result;
                         
+                        
                         foreach (var x in sensorModels)
                         {
                             if (x.SensorId == motionData.SensorId && x.Active == true)
@@ -90,7 +137,7 @@ namespace UDPConsumerGit
                                     {
                                         DeviceIden = device.Iden,
                                         Title =
-                                            $"Motion detected from sensor: {sensorData.Name}! Time of detection: {motionData.TimeOfDetection}",
+                                            $"Motion detected from sensor: {sensorData.SensorName}! Time of detection: {motionData.TimeOfDetection}",
                                         Body = $"Message for: {device.Model}"
                                     };
 
